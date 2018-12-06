@@ -11,10 +11,7 @@ var currentRaiseDetails = null;
 
 app.get('/crowdfunding', function(req, res) {
 
-  res.send({
-    amountRaised: amountRaised,
-    lastRefreshed: lastRefreshTime
-  });
+  res.send(currentRaiseDetails);
 })
 
 
