@@ -1,0 +1,14 @@
+{
+    "name": "pixie-crowdfund-scrape",
+    "version": "1.0.0",
+    "description": "Pixie Crowdfunding Scrape",
+    "main": "server.js",
+    "author": "Paul Yarrow",
+    "dependencies": {
+        "chalk": "^2.4.1",
+        "cheerio": "^1.0.0-rc.2",
+        "express": "^4.16.4",
+        "request": "^2.88.0",
+        "request-promise-native": "^1.0.5"
+    }
+}
