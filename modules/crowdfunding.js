@@ -21,9 +21,18 @@ exports.getDetails = function() {
                             .replace(/[£,]/g,'')
                             .trim());
 
+            const targetAmount = parseFloat($('.cc-pitchHead__statsSecondary > dl:nth-child(1) > dd:nth-child(2)')
+                            .text()
+                            .replace(/[£,]/g,'')
+                            .trim());
+
+            const pctRaised = (newAmount / targetAmount) * 100.0;
+
             return {
                 amountRaised: newAmount,
-                lastRefreshTime: lastRefreshTime
+                lastRefreshTime: lastRefreshTime,
+                targetAmount: targetAmount,
+                percentageRaised: pctRaised
             };
         })
 }
