@@ -1,18 +1,24 @@
 const express = require('express');
+const express_graphql = require('express-graphql');
 const app = express();
 const chalk = require('chalk');
 const crowdfunding = require('./modules/crowdfunding');
 const notify = require('./modules/notify');
+const graphQl = require('./modules/graphQl');
 
 
-var previousRaiseDetails = null;
-var currentRaiseDetails = null;
 
 
 app.get('/crowdfunding', function(req, res) {
-
-  res.send(currentRaiseDetails);
+  res.send(graphQl.currentRaiseDetails);
 })
+
+app.use('/graphql', express_graphql({
+  schema: graphQl.schema,
+  rootValue: graphQl.root,
+  graphiql: true
+}));
+
 
 
 function notifyCrowdfundChange(previousDetails, newDetails)
@@ -21,10 +27,17 @@ function notifyCrowdfundChange(previousDetails, newDetails)
   console.log(chalk.yellow("  Previous details:"), previousDetails);
   console.log(chalk.yellow("  New details:"), newDetails);  
 
+  var changeAmount = 0;
+  if (previousDetails && newDetails)
+  {
+    changeAmount = newDetails.amountRaised - previousDetails.amountRaised;
+  }
+
   notify.sendMessage({
     message: "Crowdfunding details have changed",
     previousDetails: previousDetails,
-    newDetails: newDetails
+    newDetails: newDetails,
+    changeAmount: changeAmount
   })
   .then(() => {
     console.log("Sent notification successfully");
@@ -41,13 +54,13 @@ function updateCrowdfundDetails() {
 
     console.log(`${new Date()}--Fetched amount raised`);
     
-    previousRaiseDetails = currentRaiseDetails;
-    currentRaiseDetails = crowdfundDetails;
+    graphQl.previousRaiseDetails = graphQl.currentRaiseDetails;
+    graphQl.currentRaiseDetails = crowdfundDetails;
 
-    if (previousRaiseDetails == null ||
-        previousRaiseDetails.amountRaised != currentRaiseDetails.amountRaised)
+    if (graphQl.previousRaiseDetails == null ||
+        graphQl.previousRaiseDetails.amountRaised != graphQl.currentRaiseDetails.amountRaised)
     {
-      notifyCrowdfundChange(previousRaiseDetails, currentRaiseDetails);
+      notifyCrowdfundChange(graphQl.previousRaiseDetails, graphQl.currentRaiseDetails);
     }
   })
   .catch((err) => {
