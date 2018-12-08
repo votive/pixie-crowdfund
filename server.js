@@ -4,7 +4,7 @@ const app = express();
 const chalk = require('chalk');
 const crowdfunding = require('./modules/crowdfunding');
 const notify = require('./modules/notify');
-const graphQl = require('./modules/graphQl');
+const graphQl = require('./modules/graphql');
 
 
 
